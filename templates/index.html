@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WasteWise - Pengelolaan Sampah</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>♻️ WasteWise</h1>
+        <p>Kelola Sampah, Jaga Lingkungan</p>
+    </header>
+
+    <main>
+        <!-- Dashboard Sampah -->
+        <section class="dashboard">
+            <h2>Dashboard Sampah</h2>
+
+            <div class="card">
+                <h3>Total Sampah</h3>
+                <p>{{ "%.2f"|format(total_berat) }} kg</p>
+            </div>
+
+            <div class="card">
+                <h3>Jumlah Catatan</h3>
+                <p>{{ jumlah_catatan }}</p>
+            </div>
+        </section>
+
+        <!-- Form Input Sampah -->
+        <section>
+            <h2>Tambah Data Sampah</h2>
+
+            <form action="/tambah" method="POST">
+                <label for="namaSampah">Nama Sampah</label>
+                <input type="text" id="namaSampah" name="namaSampah" placeholder="Contoh: Botol plastik" required>
+
+                <label for="kategori">Kategori Sampah</label>
+                <select id="kategori" name="kategori" required>
+                    <option value="">Pilih kategori</option>
+                    <option value="Organik">Organik</option>
+                    <option value="Plastik">Plastik</option>
+                    <option value="Kertas">Kertas</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+
+                <label for="berat">Berat Sampah (kg)</label>
+                <input type="number" id="berat" name="berat" min="0.01" step="any" placeholder="Contoh: 0.5" required>
+
+                <label for="tanggal">Tanggal Pencatatan</label>
+                <input type="date" id="tanggal" name="tanggal" value="{{ tanggal_hari_ini }}" required>
+
+                <button type="submit">Tambah Data</button>
+            </form>
+        </section>
+
+        <!-- Riwayat Sampah -->
+        <section>
+            <h2>Riwayat Sampah</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Kategori</th>
+                        <th>Berat</th>
+                        <th>Tanggal</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sampah in daftar_sampah %}
+                    <tr>
+                        <td>{{ sampah.nama }}</td>
+                        <td>{{ sampah.kategori }}</td>
+                        <td>{{ sampah.berat }} kg</td>
+                        <td>{{ sampah.tanggal }}</td>
+                        <td>
+                            <form action="/hapus/{{ sampah.id }}" method="POST" style="display:inline;">
+                                <button type="submit" class="hapus" onclick="return confirm('Yakin hapus data ini?')">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center;">Belum ada catatan sampah.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>WasteWise © 2026 | Peduli Lingkungan</p>
+    </footer>
+
+</body>
+</html>
